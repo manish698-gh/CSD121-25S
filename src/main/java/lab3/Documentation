@@ -1,0 +1,25 @@
+We made a simple Tic Tac Toe game in Java using classes and enums.
+It lets two players take turns, checks who wins, and handles user input nicely.
+
+Board class:
+Handles the 3x3 game grid and core logic.
+Stores player moves (Player[][] grid).
+Checks for win (checkWin()), draw (isDraw()), and occupied positions (isTaken()).
+Uses nested enums (Player, Row, Column) and a Position class to manage inputs and structure.
+
+Console class:
+ Manages user input via the terminal.
+Prompts for row and column input.
+Parses and validates user input into a Position object.
+
+Main class:
+Runs the game loop.
+Alternates turns between Player X and O.
+Displays the board, processes input, places moves, and checks for win/draw after each turn.
+
+Enum Usage
+An enum (short for enumeration) is a special data type in Java used to define a set of fixed, named values.
+public enum Player { X, O }
+public enum Row { TOP("t"), MIDDLE("m"), BOTTOM("b") }
+
+
