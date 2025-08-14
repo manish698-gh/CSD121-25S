@@ -55,5 +55,59 @@ class MainTest {
     }
 
     // TODO: test the searchRecipes method
+    @Test
+    void testSearchRecipesFindsByName() {
+        var results = Main.searchRecipes(() -> List.of(
+                new Recipe(0, "Chicken Soup", "warm", "", 4, 10, 5, 15),
+                new Recipe(1, "Beef Stew", "hearty", "", 4, 20, 40, 60)
+        ), "chicken");
+        assertEquals(1, results.size());
+        assertEquals(0, results.get(0).id());
+    }
 
+    @Test
+    void testSearchRecipesFindsByDescription() {
+        var results = Main.searchRecipes(() -> List.of(
+                new Recipe(0, "Pasta", "delicious chicken and pesto", "", 4, 10, 10, 20),
+                new Recipe(1, "Salad", "fresh", "", 2, 5, 0, 5)
+        ), "chicken");
+        assertEquals(1, results.size());
+        assertEquals(0, results.get(0).id());
+    }
+
+    @Test
+    void testSearchRecipesIsCaseInsensitive() {
+        var results = Main.searchRecipes(() -> List.of(
+                new Recipe(0, "CHICKEN potpie", "good", "", 4, 10, 10, 20),
+                new Recipe(1, "fish", "tasty", "", 2, 5, 0, 5)
+        ), "chIcKeN");
+        assertEquals(1, results.size());
+        assertEquals(0, results.get(0).id());
+    }
+
+    @Test
+    void testSearchRecipesReturnsEmptyWhenNoMatches() {
+        var results = Main.searchRecipes(() -> List.of(
+                new Recipe(0, "Beef Stew", "hearty", "", 4, 20, 40, 60)
+        ), "chicken");
+        assertEquals(0, results.size());
+    }
+
+    @Test
+    void testSearchRecipesHandlesDataServiceErrorsAndReturnsEmpty() {
+        DataService failing = () -> { throw new DataService.DataException(new Exception("boom")); };
+        var results = Main.searchRecipes(failing, "anything");
+        assertEquals(0, results.size());
+    }
+
+    @Test
+    void testSearchRecipesConsidersBothNameAndDescription() {
+        var results = Main.searchRecipes(() -> List.of(
+                new Recipe(0, "Pasta", "contains chicken", "", 4, 10, 10, 20),
+                new Recipe(1, "Chicken Salad", "fresh", "", 2, 5, 0, 5),
+                new Recipe(2, "Soup", "veggie", "", 1, 5, 0, 5)
+        ), "chicken");
+        assertEquals(2, results.size());
+    }
 }
+

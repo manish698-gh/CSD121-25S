@@ -27,6 +27,25 @@ public class Main {
     }
 
     // TODO: implement the searchRecipes method
+    /**
+     * Search for recipes by name or description
+     * @param dataService a service that provides access to recipe data
+     * @param query the text to search for
+     * @return list of recipes matching the query
+     */
+    public static List<Recipe> searchRecipes(DataService dataService, String query) {
+        try {
+            String lowerQuery = query.toLowerCase();
+            return dataService.getRecipes().stream()
+                    .filter(r -> r.name().toLowerCase().contains(lowerQuery)
+                            || r.description().toLowerCase().contains(lowerQuery))
+                    .toList();
+        } catch (Exception e) {
+            logger.error("Error while searching recipes: " + e.getMessage());
+            logger.debug("Stack trace: " + Arrays.toString(e.getStackTrace()));
+            return List.of();
+        }
+    }
 
     public static void main(String[] args) {
         // Here, we INJECT a concrete implementation of the DataService interface
@@ -36,5 +55,9 @@ public class Main {
         quickRecipes.forEach(System.out::println);
 
         // TODO: use your searchRecipes method with a SqliteDataService object
+        // Search for recipes with "chicken" in name or description
+        var searchResults = searchRecipes(new SqliteDataService(), "chicken");
+        System.out.println("Search Results:");
+        searchResults.forEach(System.out::println);
     }
 }
